@@ -10,6 +10,13 @@ interface Section {
   items: TimelineItem[];
 }
 
+const nightBeforeSection: Section = {
+  heading: 'The Night Before (optional) — Humphrey\'s Pub, Ranelagh',
+  items: [
+    { time: '7:00 PM', event: 'Join us for a toast at Humphrey\'s Pub, Ranelagh' },
+  ],
+};
+
 const ceremonyDinnerSections: Section[] = [
   {
     heading: 'Ceremony — MoLI, St Stephen’s Green',
@@ -22,7 +29,7 @@ const ceremonyDinnerSections: Section[] = [
   {
     heading: 'Getting to Ashton’s',
     items: [
-      { time: '4:00 PM', event: 'Bus departs MoLI (Dualway Bus)' },
+      { time: '4:00 PM', event: 'Bus departs MoLI' },
       { time: '4:45 PM', event: 'Arrive at Ashton’s, Rathmines' },
     ],
   },
@@ -51,7 +58,10 @@ const dinnerOnlySections: Section[] = [
 ];
 
 export default function Schedule({ attendanceType }: { attendanceType: AttendanceType }) {
-  const sections = attendanceType === 'Ceremony + Dinner' ? ceremonyDinnerSections : dinnerOnlySections;
+  const sections = [
+    nightBeforeSection,
+    ...(attendanceType === 'Ceremony + Dinner' ? ceremonyDinnerSections : dinnerOnlySections),
+  ];
 
   return (
     <div className="space-y-8">

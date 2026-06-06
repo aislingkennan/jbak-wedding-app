@@ -32,10 +32,10 @@ export default function RSVPTabs({ party, isDemo }: { party: Party; isDemo?: boo
         ))}
       </div>
 
-      <div className="p-8">
+      <div className="p-6">
         {active === 'RSVP' && <RSVPForm party={party} isDemo={isDemo} />}
         {active === 'The Day' && <Schedule attendanceType={party.attendanceType} />}
-        {active === 'FAQs' && <FAQ />}
+        {active === 'FAQs' && <FAQ attendanceType={party.attendanceType} />}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export default async function RsvpPage({ params }: { params: { token: string } }
       style={{ backgroundImage: "url('/photos/door.jpg')", backgroundPosition: '5% center' }}
     >
       <div className="min-h-screen absolute inset-0 bg-black/40" />
-      <div className="relative max-w-lg ml-auto mr-8 lg:mr-[22rem]">
+      <div className="relative max-w-lg mx-4 sm:mx-auto lg:ml-auto lg:mr-[22rem]">
         <header className="text-center mb-8">
           <p className="text-xs uppercase tracking-[4px] mb-2 text-white/70">
             5th September 2026

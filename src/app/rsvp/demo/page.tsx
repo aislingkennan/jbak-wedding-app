@@ -37,7 +37,7 @@ export default function DemoPage() {
       style={{ backgroundImage: "url('/photos/door.jpg')", backgroundPosition: '5% center' }}
     >
       <div className="min-h-screen absolute inset-0 bg-black/40" />
-      <div className="relative max-w-lg ml-auto mr-8 lg:mr-[22rem]">
+      <div className="relative max-w-lg mx-4 sm:mx-auto lg:ml-auto lg:mr-[22rem]">
         <div className="mb-4 px-4 py-2 text-xs text-center text-amber-900 bg-amber-100/90 border border-amber-300">
           <strong>Demo mode</strong> — no data will be saved
         </div>
