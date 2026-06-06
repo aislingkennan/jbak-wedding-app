@@ -9,9 +9,10 @@ export async function GET(request: Request) {
     partyName: 'Test',
     displayName: 'Aisling',
     attendanceType: 'Ceremony + Dinner',
-    guests: [{ firstName: 'Aisling', lastName: 'Kennan', email: to, party: 'Test', attendanceType: 'Ceremony + Dinner', token: 'test', rowIndex: 0 }],
+    guests: [{ firstName: 'Aisling', lastName: 'Kennan', email: to, party: 'Test', attendanceType: 'Ceremony + Dinner', token: 'test', rowIndex: 0, inviteSentAt: '' }],
     primaryEmail: to,
     emails: [to],
+    inviteSentAt: '',
   };
 
   await sendInvite(testParty);
