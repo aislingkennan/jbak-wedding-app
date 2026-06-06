@@ -83,7 +83,11 @@ export default async function DashboardPage({
   function getStatus(party: Party): Status {
     const rsvp = rsvpMap.get(party.token);
     if (!rsvp) return 'pending';
-    return rsvp.attending === 'Yes' ? 'accepted' : 'declined';
+    const anyYes = rsvp.guest1Attending === 'Yes' || (rsvp.guest2Name && rsvp.guest2Attending === 'Yes');
+    const allNo = rsvp.guest1Attending !== 'Yes' && (!rsvp.guest2Name || rsvp.guest2Attending !== 'Yes');
+    if (anyYes) return 'accepted';
+    if (allNo) return 'declined';
+    return 'pending';
   }
 
   const ceremonyParties = parties.filter((p) => p.attendanceType === 'Ceremony + Dinner');
@@ -242,7 +246,7 @@ export default async function DashboardPage({
                         <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest1Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest1Attending}</td>
                         <td className="px-3 py-2 text-slate-500">{r.guest1Dietary}</td>
                         <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest2Name}</td>
-                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest2Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest2Attending}</td>
+                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest2Name ? (r.guest2Attending === 'Yes' ? '#16a34a' : '#dc2626') : undefined }}>{r.guest2Name ? r.guest2Attending : ''}</td>
                         <td className="px-3 py-2 text-slate-500">{r.guest2Dietary}</td>
                         <td className="px-3 py-2 text-slate-500">{r.childUnder3}</td>
                         <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.timestamp}</td>
