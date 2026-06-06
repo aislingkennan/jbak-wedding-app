@@ -1,4 +1,5 @@
 import RSVPTabs from '../_components/RSVPTabs';
+import CollapsibleCard from '../_components/CollapsibleCard';
 import type { Party } from '@/lib/types';
 
 const demoParty: Party = {
@@ -53,9 +54,9 @@ export default function DemoPage() {
           <p className="text-sm text-white/60 tracking-wide">Dublin, Ireland</p>
         </header>
 
-        <div className="bg-white/95 backdrop-blur-sm border border-white/20 shadow-xl">
+        <CollapsibleCard>
           <RSVPTabs party={demoParty} isDemo />
-        </div>
+        </CollapsibleCard>
 
         <footer className="text-center mt-6">
           <p className="text-xs text-white/50">

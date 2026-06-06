@@ -19,7 +19,7 @@ export default function RSVPTabs({ party, isDemo }: { party: Party; isDemo?: boo
           <button
             key={tab}
             onClick={() => setActive(tab)}
-            className="flex-1 py-3 text-sm tracking-wide transition-colors"
+            className="flex-1 py-3 text-sm tracking-wide transition-colors select-none"
             style={{
               color: active === tab ? '#c9a84c' : '#8b7355',
               borderBottom: active === tab ? '2px solid #c9a84c' : '2px solid transparent',

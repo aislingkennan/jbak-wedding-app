@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getPartyByToken } from '@/lib/tokens';
 import RSVPTabs from '../_components/RSVPTabs';
+import CollapsibleCard from '../_components/CollapsibleCard';
 
 export default async function RsvpPage({ params }: { params: { token: string } }) {
   const party = await getPartyByToken(params.token);
@@ -21,9 +22,9 @@ export default async function RsvpPage({ params }: { params: { token: string } }
           <p className="text-sm text-white/60 tracking-wide">Dublin, Ireland</p>
         </header>
 
-        <div className="bg-white/95 backdrop-blur-sm border border-white/20 shadow-xl">
+        <CollapsibleCard>
           <RSVPTabs party={party} />
-        </div>
+        </CollapsibleCard>
 
         <footer className="text-center mt-6">
           <p className="text-xs text-white/50">

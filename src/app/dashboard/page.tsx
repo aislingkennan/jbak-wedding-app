@@ -160,8 +160,8 @@ export default async function DashboardPage({
   const tdCls = 'px-3 py-2 text-sm text-slate-700';
 
   return (
-    <main className="min-h-screen bg-slate-50 py-10 px-4">
-      <div className="max-w-5xl mx-auto space-y-10">
+    <main className="min-h-screen bg-slate-50">
+      <div className="max-w-5xl mx-auto space-y-10 py-10 px-4">
 
         <header>
           <h1 className="text-2xl font-semibold text-slate-800">Jack &amp; Aisling · RSVP Dashboard</h1>
@@ -338,5 +338,6 @@ export default async function DashboardPage({
 
       </div>
     </main>
+
   );
 }
