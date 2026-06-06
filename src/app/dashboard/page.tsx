@@ -94,18 +94,36 @@ export default async function DashboardPage({
   const dinnerParties = parties.filter((p) => p.attendanceType === 'Dinner');
 
   function counts(subset: Party[]) {
-    const accepted = subset.filter((p) => getStatus(p) === 'accepted');
-    const declined = subset.filter((p) => getStatus(p) === 'declined');
-    const pending = subset.filter((p) => getStatus(p) === 'pending');
+    let acceptedGuests = 0, acceptedParties = 0;
+    let declinedGuests = 0, declinedParties = 0;
+    let pendingGuests = 0, pendingParties = 0;
+
+    for (const party of subset) {
+      const rsvp = rsvpMap.get(party.token);
+      if (!rsvp) {
+        pendingGuests += party.guests.length;
+        pendingParties++;
+      } else {
+        const g1yes = rsvp.guest1Attending === 'Yes';
+        const g2yes = rsvp.guest2Name ? rsvp.guest2Attending === 'Yes' : null;
+
+        if (g1yes) acceptedGuests++; else declinedGuests++;
+        if (g2yes === true) acceptedGuests++;
+        if (g2yes === false) declinedGuests++;
+
+        const anyYes = g1yes || g2yes === true;
+        const allNo = !g1yes && g2yes !== true;
+        if (anyYes) acceptedParties++;
+        else if (allNo) declinedParties++;
+      }
+    }
+
     return {
       totalGuests: subset.reduce((s, p) => s + p.guests.length, 0),
       totalParties: subset.length,
-      acceptedGuests: accepted.reduce((s, p) => s + p.guests.length, 0),
-      acceptedParties: accepted.length,
-      declinedGuests: declined.reduce((s, p) => s + p.guests.length, 0),
-      declinedParties: declined.length,
-      pendingGuests: pending.reduce((s, p) => s + p.guests.length, 0),
-      pendingParties: pending.length,
+      acceptedGuests, acceptedParties,
+      declinedGuests, declinedParties,
+      pendingGuests, pendingParties,
     };
   }
 
