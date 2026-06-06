@@ -216,6 +216,46 @@ export default async function DashboardPage({
         </section>
 
         <section>
+          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">All responses</h2>
+          {rsvpRows.length === 0 ? (
+            <p className="text-sm text-slate-400">No responses yet.</p>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-lg overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    {['Party', 'Type', 'Guest 1', 'Att.', 'Dietary', 'Guest 2', 'Att.', 'Dietary', 'Child', 'Submitted'].map((h) => (
+                      <th key={h} className="text-left text-xs uppercase tracking-wider text-slate-500 px-3 py-2 font-medium whitespace-nowrap">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rsvpRows.map((row, i) => {
+                    const r = parseRsvpRow(row);
+                    return (
+                      <tr key={i} className="border-b border-slate-100 last:border-0">
+                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.partyName}</td>
+                        <td className="px-3 py-2 text-slate-500 whitespace-nowrap">{r.attendanceType}</td>
+                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest1Name}</td>
+                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest1Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest1Attending}</td>
+                        <td className="px-3 py-2 text-slate-500">{r.guest1Dietary}</td>
+                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest2Name}</td>
+                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest2Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest2Attending}</td>
+                        <td className="px-3 py-2 text-slate-500">{r.guest2Dietary}</td>
+                        <td className="px-3 py-2 text-slate-500">{r.childUnder3}</td>
+                        <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.timestamp}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <section>
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
             Invitations sent ({inviteSent.length} of {parties.length})
           </h2>
@@ -270,46 +310,6 @@ export default async function DashboardPage({
                   <span className="text-xs text-slate-500">{p.primaryEmail}</span>
                 </div>
               ))}
-            </div>
-          )}
-        </section>
-
-        <section>
-          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">All responses</h2>
-          {rsvpRows.length === 0 ? (
-            <p className="text-sm text-slate-400">No responses yet.</p>
-          ) : (
-            <div className="bg-white border border-slate-200 rounded-lg overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    {['Party', 'Type', 'Guest 1', 'Att.', 'Dietary', 'Guest 2', 'Att.', 'Dietary', 'Child', 'Submitted'].map((h) => (
-                      <th key={h} className="text-left text-xs uppercase tracking-wider text-slate-500 px-3 py-2 font-medium whitespace-nowrap">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rsvpRows.map((row, i) => {
-                    const r = parseRsvpRow(row);
-                    return (
-                      <tr key={i} className="border-b border-slate-100 last:border-0">
-                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.partyName}</td>
-                        <td className="px-3 py-2 text-slate-500 whitespace-nowrap">{r.attendanceType}</td>
-                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest1Name}</td>
-                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest1Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest1Attending}</td>
-                        <td className="px-3 py-2 text-slate-500">{r.guest1Dietary}</td>
-                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest2Name}</td>
-                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest2Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest2Attending}</td>
-                        <td className="px-3 py-2 text-slate-500">{r.guest2Dietary}</td>
-                        <td className="px-3 py-2 text-slate-500">{r.childUnder3}</td>
-                        <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.timestamp}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
             </div>
           )}
         </section>
