@@ -1,8 +1,9 @@
 import { sendInvite } from '@/lib/email';
 import type { Party } from '@/lib/types';
 
-export async function GET() {
-  const to = process.env.GMAIL_USER ?? '';
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const to = searchParams.get('to') ?? process.env.GMAIL_USER ?? '';
   const testParty: Party = {
     token: 'test',
     partyName: 'Test',

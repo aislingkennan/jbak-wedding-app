@@ -21,8 +21,7 @@ export interface Party {
 }
 
 export interface RsvpSubmission {
-  attending: boolean;
-  guestResponses: { name: string; dietary: string }[];
+  guestResponses: { name: string; dietary: string; attending: boolean }[];
   childUnder3: boolean;
   notes?: string;
 }

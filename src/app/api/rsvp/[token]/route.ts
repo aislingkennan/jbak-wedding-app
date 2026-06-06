@@ -15,17 +15,20 @@ export async function POST(
   }
 
   const body: RsvpSubmission = await request.json();
-  const { attending, guestResponses, childUnder3, notes } = body;
+  const { guestResponses, childUnder3, notes } = body;
+  const anyAttending = guestResponses.some((g) => g.attending);
 
   if (token !== 'demo') {
     const row: string[] = [
       token,
       party!.partyName,
       party!.attendanceType,
-      attending ? 'Yes' : 'No',
+      anyAttending ? 'Yes' : 'No',
       guestResponses[0]?.name ?? '',
+      guestResponses[0]?.attending ? 'Yes' : 'No',
       guestResponses[0]?.dietary ?? '',
       guestResponses[1]?.name ?? '',
+      guestResponses[1]?.attending ? 'Yes' : 'No',
       guestResponses[1]?.dietary ?? '',
       childUnder3 ? 'Yes' : 'No',
       notes ?? '',
