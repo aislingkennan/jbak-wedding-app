@@ -68,7 +68,14 @@ export default async function DashboardPage({
   const rsvpMap = new Map<string, RsvpRow>();
   for (const row of rsvpRows) {
     const parsed = parseRsvpRow(row);
-    if (parsed.token) rsvpMap.set(parsed.token, parsed);
+    if (!parsed.token) continue;
+    const existing = rsvpMap.get(parsed.token);
+    if (existing) {
+      const combinedNotes = [existing.notes, parsed.notes].filter(Boolean).join(' | ');
+      rsvpMap.set(parsed.token, { ...parsed, notes: combinedNotes });
+    } else {
+      rsvpMap.set(parsed.token, parsed);
+    }
   }
 
   type Status = 'accepted' | 'declined' | 'pending';
