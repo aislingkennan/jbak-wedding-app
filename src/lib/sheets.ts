@@ -51,7 +51,7 @@ export async function getRsvpResponses(): Promise<string[][]> {
   const sheets = google.sheets({ version: 'v4', auth: getAuth() });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `'${RSVP_SHEET}'!A2:K500`,
+    range: `'${RSVP_SHEET}'!A2:M500`,
   });
   return (res.data.values as string[][]) ?? [];
 }
