@@ -69,6 +69,7 @@ export default function RSVPForm({ party, isDemo }: Props) {
             ? `Thank you, ${party.displayName}. We're sorry not everyone can make it, but we can't wait to celebrate with those who can!`
             : `Thank you, ${party.displayName}. We can't wait to celebrate with you on the 5th of September.`}
         </p>
+        <p className="text-xs text-gray-400 mt-4">Your response has been recorded.</p>
       </div>
     );
   }

@@ -8,8 +8,10 @@ interface RsvpRow {
   attendanceType: string;
   attending: string;
   guest1Name: string;
+  guest1Attending: string;
   guest1Dietary: string;
   guest2Name: string;
+  guest2Attending: string;
   guest2Dietary: string;
   childUnder3: string;
   notes: string;
@@ -23,12 +25,14 @@ function parseRsvpRow(row: string[]): RsvpRow {
     attendanceType: row[2] ?? '',
     attending: row[3] ?? '',
     guest1Name: row[4] ?? '',
-    guest1Dietary: row[5] ?? '',
-    guest2Name: row[6] ?? '',
-    guest2Dietary: row[7] ?? '',
-    childUnder3: row[8] ?? '',
-    notes: row[9] ?? '',
-    timestamp: row[10] ?? '',
+    guest1Attending: row[5] ?? '',
+    guest1Dietary: row[6] ?? '',
+    guest2Name: row[7] ?? '',
+    guest2Attending: row[8] ?? '',
+    guest2Dietary: row[9] ?? '',
+    childUnder3: row[10] ?? '',
+    notes: row[11] ?? '',
+    timestamp: row[12] ?? '',
   };
 }
 
@@ -103,10 +107,10 @@ export default async function DashboardPage({
 
   for (const row of rsvpRows) {
     const r = parseRsvpRow(row);
-    if (r.guest1Dietary) {
+    if (r.guest1Dietary && r.guest1Attending === 'Yes') {
       dietaryItems.push({ guestName: r.guest1Name, partyName: r.partyName, dietary: r.guest1Dietary });
     }
-    if (r.guest2Dietary) {
+    if (r.guest2Dietary && r.guest2Attending === 'Yes') {
       dietaryItems.push({ guestName: r.guest2Name, partyName: r.partyName, dietary: r.guest2Dietary });
     }
     if (r.childUnder3 === 'Yes') {
@@ -117,6 +121,9 @@ export default async function DashboardPage({
   const pendingParties = parties
     .filter((p) => getStatus(p) === 'pending')
     .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+  const inviteSent = parties.filter((p) => p.inviteSentAt);
+  const inviteNotSent = parties.filter((p) => !p.inviteSentAt && p.primaryEmail);
 
   const today = new Date().toLocaleDateString('en-IE', { dateStyle: 'long' });
 
@@ -203,6 +210,44 @@ export default async function DashboardPage({
 
         <section>
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
+            Invitations sent ({inviteSent.length} of {parties.length})
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+              <div className="px-4 py-2 bg-green-50 border-b border-slate-200">
+                <p className="text-xs font-semibold uppercase tracking-wider text-green-700">Sent ({inviteSent.length})</p>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {inviteSent.map((p) => (
+                  <div key={p.token} className="px-4 py-2 flex justify-between items-center">
+                    <span className="text-sm text-slate-700">{p.displayName}</span>
+                    <span className="text-xs text-slate-400">{new Date(p.inviteSentAt).toLocaleDateString('en-IE')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+              <div className="px-4 py-2 bg-amber-50 border-b border-slate-200">
+                <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">Not yet sent ({inviteNotSent.length})</p>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {inviteNotSent.length === 0 ? (
+                  <p className="px-4 py-3 text-sm text-slate-400">All invites sent!</p>
+                ) : (
+                  inviteNotSent.map((p) => (
+                    <div key={p.token} className="px-4 py-2 flex justify-between items-center">
+                      <span className="text-sm text-slate-700">{p.displayName}</span>
+                      <span className="text-xs text-slate-400">{p.primaryEmail}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
             Pending RSVPs ({pendingParties.length})
           </h2>
           {pendingParties.length === 0 ? (
@@ -231,7 +276,7 @@ export default async function DashboardPage({
               <table className="w-full text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    {['Party', 'Type', 'Attending', 'Guest 1', 'Dietary', 'Guest 2', 'Dietary', 'Child', 'Submitted'].map((h) => (
+                    {['Party', 'Type', 'Guest 1', 'Att.', 'Dietary', 'Guest 2', 'Att.', 'Dietary', 'Child', 'Submitted'].map((h) => (
                       <th key={h} className="text-left text-xs uppercase tracking-wider text-slate-500 px-3 py-2 font-medium whitespace-nowrap">
                         {h}
                       </th>
@@ -245,10 +290,11 @@ export default async function DashboardPage({
                       <tr key={i} className="border-b border-slate-100 last:border-0">
                         <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.partyName}</td>
                         <td className="px-3 py-2 text-slate-500 whitespace-nowrap">{r.attendanceType}</td>
-                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.attending}</td>
                         <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest1Name}</td>
+                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest1Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest1Attending}</td>
                         <td className="px-3 py-2 text-slate-500">{r.guest1Dietary}</td>
                         <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest2Name}</td>
+                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest2Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest2Attending}</td>
                         <td className="px-3 py-2 text-slate-500">{r.guest2Dietary}</td>
                         <td className="px-3 py-2 text-slate-500">{r.childUnder3}</td>
                         <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.timestamp}</td>

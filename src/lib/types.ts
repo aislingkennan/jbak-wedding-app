@@ -8,6 +8,7 @@ export interface GuestRow {
   attendanceType: AttendanceType;
   token: string;
   rowIndex: number;
+  inviteSentAt: string;
 }
 
 export interface Party {
@@ -18,6 +19,7 @@ export interface Party {
   guests: GuestRow[];
   primaryEmail: string;
   emails: string[];
+  inviteSentAt: string;
 }
 
 export interface RsvpSubmission {

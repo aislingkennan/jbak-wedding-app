@@ -16,9 +16,24 @@ export async function getAllGuests(): Promise<string[][]> {
   const sheets = google.sheets({ version: 'v4', auth: getAuth() });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `'${GUEST_SHEET}'!A2:I300`,
+    range: `'${GUEST_SHEET}'!A2:J300`,
   });
   return (res.data.values as string[][]) ?? [];
+}
+
+export async function writeInviteSent(rowIndices: number[]): Promise<void> {
+  const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+  const timestamp = new Date().toISOString();
+  await Promise.all(
+    rowIndices.map((rowIndex) =>
+      sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `'${GUEST_SHEET}'!J${rowIndex + 2}`,
+        valueInputOption: 'RAW',
+        requestBody: { values: [[timestamp]] },
+      })
+    )
+  );
 }
 
 export async function writeToken(rowIndex: number, token: string): Promise<void> {

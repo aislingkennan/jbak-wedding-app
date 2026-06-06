@@ -11,6 +11,7 @@ export function parseRows(rows: string[][]): GuestRow[] {
     attendanceType: (row[6] as AttendanceType) ?? 'Dinner',
     token: row[8] ?? '',
     rowIndex: index,
+    inviteSentAt: row[9] ?? '',
   }));
 }
 
@@ -44,7 +45,8 @@ export function groupIntoParties(guests: GuestRow[]): Party[] {
     const emails = [...new Set(allEmails)];
     const primaryEmail = emails[0] ?? '';
 
-    parties.push({ token, partyName, displayName, attendanceType, guests: partyGuests, primaryEmail, emails });
+    const inviteSentAt = partyGuests.find((g) => g.inviteSentAt)?.inviteSentAt ?? '';
+    parties.push({ token, partyName, displayName, attendanceType, guests: partyGuests, primaryEmail, emails, inviteSentAt });
   }
 
   return parties;
