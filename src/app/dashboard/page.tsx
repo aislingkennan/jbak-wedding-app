@@ -133,9 +133,9 @@ export default async function DashboardPage({
 
   const dietaryItems: { guestName: string; partyName: string; dietary: string }[] = [];
   const childrenParties: { displayName: string; token: string }[] = [];
+  const notesItems: { partyName: string; notes: string }[] = [];
 
-  for (const row of rsvpRows) {
-    const r = parseRsvpRow(row);
+  for (const [token, r] of rsvpMap) {
     if (r.guest1Dietary && r.guest1Attending === 'Yes') {
       dietaryItems.push({ guestName: r.guest1Name, partyName: r.partyName, dietary: r.guest1Dietary });
     }
@@ -143,7 +143,10 @@ export default async function DashboardPage({
       dietaryItems.push({ guestName: r.guest2Name, partyName: r.partyName, dietary: r.guest2Dietary });
     }
     if (r.childUnder3 === 'Yes') {
-      childrenParties.push({ displayName: r.partyName, token: r.token });
+      childrenParties.push({ displayName: r.partyName, token });
+    }
+    if (r.notes) {
+      notesItems.push({ partyName: r.partyName, notes: r.notes });
     }
   }
 
@@ -232,6 +235,21 @@ export default async function DashboardPage({
             <div className="bg-white border border-slate-200 rounded-lg divide-y divide-slate-100">
               {childrenParties.map((p) => (
                 <div key={p.token} className="px-4 py-3 text-sm text-slate-700">{p.displayName}</div>
+              ))}
+            </div>
+          )}
+
+          <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wider mt-6 mb-3">Notes</h3>
+          {notesItems.length === 0 ? (
+            <p className="text-sm text-slate-400">No notes yet.</p>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-lg divide-y divide-slate-100">
+              {notesItems.map((item, i) => (
+                <div key={i} className="px-4 py-3 text-sm text-slate-700">
+                  <span className="font-medium">{item.partyName}</span>
+                  {' — '}
+                  {item.notes}
+                </div>
               ))}
             </div>
           )}
