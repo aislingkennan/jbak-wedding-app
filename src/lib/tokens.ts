@@ -9,6 +9,7 @@ export function parseRows(rows: string[][]): GuestRow[] {
     email: row[2] ?? '',
     party: row[5] ?? '',
     attendanceType: (row[6] as AttendanceType) ?? 'Dinner',
+    guestOf: row[7] ?? '',
     token: row[8] ?? '',
     rowIndex: index,
     inviteSentAt: row[9] ?? '',
@@ -46,7 +47,8 @@ export function groupIntoParties(guests: GuestRow[]): Party[] {
     const primaryEmail = emails[0] ?? '';
 
     const inviteSentAt = partyGuests.find((g) => g.inviteSentAt)?.inviteSentAt ?? '';
-    parties.push({ token, partyName, displayName, attendanceType, guests: partyGuests, primaryEmail, emails, inviteSentAt });
+    const guestOf = partyGuests[0].guestOf ?? '';
+    parties.push({ token, partyName, displayName, attendanceType, guestOf, guests: partyGuests, primaryEmail, emails, inviteSentAt });
   }
 
   return parties;

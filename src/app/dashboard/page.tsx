@@ -1,6 +1,7 @@
 import { getAllParties } from '@/lib/tokens';
 import { getRsvpResponses } from '@/lib/sheets';
 import type { Party } from '@/lib/types';
+import GuestTable, { type GuestRow as GuestTableRow } from './_components/GuestTable';
 
 interface RsvpRow {
   token: string;
@@ -157,6 +158,37 @@ export default async function DashboardPage({
   const inviteSent = parties.filter((p) => p.inviteSentAt);
   const inviteNotSent = parties.filter((p) => !p.inviteSentAt && p.primaryEmail);
 
+  const guestTableRows: GuestTableRow[] = parties.map((p) => {
+    const rsvp = rsvpMap.get(p.token);
+    const status = getStatus(p);
+    const g1yes = rsvp?.guest1Attending === 'Yes';
+    const g2yes = rsvp?.guest2Name ? rsvp.guest2Attending === 'Yes' : null;
+    let response: GuestTableRow['response'] = p.inviteSentAt ? 'Pending' : 'Invite not sent';
+    if (rsvp) {
+      if (g1yes && g2yes !== false) response = 'Accepted';
+      else if (!g1yes && g2yes !== true) response = 'Declined';
+      else response = 'Partial';
+    }
+    return {
+      token: p.token,
+      displayName: p.displayName,
+      attendanceType: p.attendanceType,
+      guestOf: p.guestOf,
+      inviteSentAt: p.inviteSentAt,
+      response,
+      guest1Name: rsvp?.guest1Name ?? '',
+      guest1Attending: rsvp?.guest1Attending ?? '',
+      guest2Name: rsvp?.guest2Name ?? '',
+      guest2Attending: rsvp?.guest2Name ? (rsvp?.guest2Attending ?? '') : '',
+      notes: rsvp?.notes ?? '',
+    };
+  });
+
+  const recentResponses = [...rsvpMap.values()]
+    .filter((r) => r.timestamp)
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(0, 5);
+
   const today = new Date().toLocaleDateString('en-IE', { dateStyle: 'long' });
 
   const thCls = 'text-left text-xs uppercase tracking-wider text-slate-500 px-3 py-2 font-medium';
@@ -179,6 +211,32 @@ export default async function DashboardPage({
             <StatCard label="Pending" guests={all.pendingGuests} parties={all.pendingParties} />
           </div>
         </section>
+
+        {recentResponses.length > 0 && (
+          <section>
+            <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Recent responses</h2>
+            <div className="bg-white border border-slate-200 rounded-lg divide-y divide-slate-100">
+              {recentResponses.map((r) => {
+                const g1yes = r.guest1Attending === 'Yes';
+                const g2yes = r.guest2Name ? r.guest2Attending === 'Yes' : null;
+                const label = g1yes && g2yes !== false ? 'Accepted' : !g1yes && g2yes !== true ? 'Declined' : 'Partial';
+                const color = label === 'Accepted' ? '#16a34a' : label === 'Declined' ? '#dc2626' : '#d97706';
+                const ts = new Date(r.timestamp);
+                const timeStr = ts.toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = ts.toLocaleDateString('en-IE', { day: 'numeric', month: 'short' });
+                return (
+                  <div key={r.token} className="px-4 py-3 flex items-center justify-between gap-4">
+                    <div>
+                      <span className="text-sm font-medium text-slate-800">{r.partyName}</span>
+                      <span className="ml-2 text-xs font-medium" style={{ color }}>{label}</span>
+                    </div>
+                    <span className="text-xs text-slate-400 whitespace-nowrap">{dateStr} · {timeStr}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         <section>
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Breakdown by type</h2>
@@ -256,102 +314,8 @@ export default async function DashboardPage({
         </section>
 
         <section>
-          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">All responses</h2>
-          {rsvpRows.length === 0 ? (
-            <p className="text-sm text-slate-400">No responses yet.</p>
-          ) : (
-            <div className="bg-white border border-slate-200 rounded-lg overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    {['Party', 'Type', 'Guest 1', 'Att.', 'Dietary', 'Guest 2', 'Att.', 'Dietary', 'Child', 'Submitted'].map((h) => (
-                      <th key={h} className="text-left text-xs uppercase tracking-wider text-slate-500 px-3 py-2 font-medium whitespace-nowrap">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rsvpRows.map((row, i) => {
-                    const r = parseRsvpRow(row);
-                    return (
-                      <tr key={i} className="border-b border-slate-100 last:border-0">
-                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.partyName}</td>
-                        <td className="px-3 py-2 text-slate-500 whitespace-nowrap">{r.attendanceType}</td>
-                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest1Name}</td>
-                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest1Attending === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.guest1Attending}</td>
-                        <td className="px-3 py-2 text-slate-500">{r.guest1Dietary}</td>
-                        <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{r.guest2Name}</td>
-                        <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: r.guest2Name ? (r.guest2Attending === 'Yes' ? '#16a34a' : '#dc2626') : undefined }}>{r.guest2Name ? r.guest2Attending : ''}</td>
-                        <td className="px-3 py-2 text-slate-500">{r.guest2Dietary}</td>
-                        <td className="px-3 py-2 text-slate-500">{r.childUnder3}</td>
-                        <td className="px-3 py-2 text-slate-400 whitespace-nowrap">{r.timestamp}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-
-        <section>
-          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
-            Invitations sent ({inviteSent.length} of {parties.length})
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-              <div className="px-4 py-2 bg-green-50 border-b border-slate-200">
-                <p className="text-xs font-semibold uppercase tracking-wider text-green-700">Sent ({inviteSent.length})</p>
-              </div>
-              <div className="divide-y divide-slate-100">
-                {inviteSent.map((p) => (
-                  <div key={p.token} className="px-4 py-2 flex justify-between items-center">
-                    <span className="text-sm text-slate-700">{p.displayName}</span>
-                    <span className="text-xs text-slate-400">{new Date(p.inviteSentAt).toLocaleDateString('en-IE')}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-              <div className="px-4 py-2 bg-amber-50 border-b border-slate-200">
-                <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">Not yet sent ({inviteNotSent.length})</p>
-              </div>
-              <div className="divide-y divide-slate-100">
-                {inviteNotSent.length === 0 ? (
-                  <p className="px-4 py-3 text-sm text-slate-400">All invites sent!</p>
-                ) : (
-                  inviteNotSent.map((p) => (
-                    <div key={p.token} className="px-4 py-2 flex justify-between items-center">
-                      <span className="text-sm text-slate-700">{p.displayName}</span>
-                      <span className="text-xs text-slate-400">{p.primaryEmail}</span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
-            Pending RSVPs ({pendingParties.length})
-          </h2>
-          {pendingParties.length === 0 ? (
-            <p className="text-sm text-slate-400">Everyone has responded!</p>
-          ) : (
-            <div className="bg-white border border-slate-200 rounded-lg divide-y divide-slate-100">
-              {pendingParties.map((p) => (
-                <div key={p.token} className="px-4 py-3 flex items-center justify-between gap-4">
-                  <div>
-                    <span className="text-sm font-medium text-slate-800">{p.displayName}</span>
-                    <span className="ml-2 text-xs text-slate-400">{p.attendanceType}</span>
-                  </div>
-                  <span className="text-xs text-slate-500">{p.primaryEmail}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">All guests</h2>
+          <GuestTable rows={guestTableRows} />
         </section>
 
       </div>

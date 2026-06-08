@@ -14,6 +14,7 @@ const demoParty: Party = {
       email: 'jane@example.com',
       party: 'Smith',
       attendanceType: 'Ceremony + Dinner',
+      guestOf: '',
       token: 'demo',
       rowIndex: 0,
       inviteSentAt: '',
@@ -24,6 +25,7 @@ const demoParty: Party = {
       email: 'john@example.com',
       party: 'Smith',
       attendanceType: 'Ceremony + Dinner',
+      guestOf: '',
       token: 'demo',
       rowIndex: 1,
       inviteSentAt: '',
@@ -32,6 +34,7 @@ const demoParty: Party = {
   primaryEmail: 'jane@example.com',
   emails: ['jane@example.com', 'john@example.com'],
   inviteSentAt: '',
+  guestOf: '',
 };
 
 export default function DemoPage() {
