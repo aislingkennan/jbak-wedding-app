@@ -65,3 +65,13 @@ export async function writeRsvp(row: string[]): Promise<void> {
     requestBody: { values: [row] },
   });
 }
+
+export async function writeAfterPartyRsvp(row: string[]): Promise<void> {
+  const sheets = google.sheets({ version: 'v4', auth: getAuth() });
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `'After Party'!A1`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [row] },
+  });
+}
