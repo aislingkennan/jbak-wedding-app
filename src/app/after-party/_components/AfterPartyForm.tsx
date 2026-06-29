@@ -138,9 +138,10 @@ export default function AfterPartyForm() {
         </div>
 
         <div>
-          <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">
+          <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">
             Interested in a shuttle from Belfast to Dublin?
           </label>
+          <p className="text-xs text-gray-400 mb-2">We will organise a shuttle bus back and forth between Belfast and Dublin before and after the party.</p>
           <div className="flex gap-3">
             <button
               type="button"
