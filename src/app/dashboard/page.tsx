@@ -1,5 +1,5 @@
 import { getAllParties } from '@/lib/tokens';
-import { getRsvpResponses } from '@/lib/sheets';
+import { getRsvpResponses, getAfterPartyRsvps } from '@/lib/sheets';
 import type { Party } from '@/lib/types';
 import GuestTable, { type GuestRow as GuestTableRow } from './_components/GuestTable';
 
@@ -60,7 +60,7 @@ export default async function DashboardPage({
     );
   }
 
-  const [allParties, rsvpRows] = await Promise.all([getAllParties(), getRsvpResponses()]);
+  const [allParties, rsvpRows, afterPartyRows] = await Promise.all([getAllParties(), getRsvpResponses(), getAfterPartyRsvps()]);
 
   const parties = allParties.filter(
     (p) => p.primaryEmail && p.primaryEmail !== 'N/A',
@@ -189,6 +189,37 @@ export default async function DashboardPage({
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     .slice(0, 5);
 
+  interface AfterPartyRow {
+    name: string;
+    attending: string;
+    partnerName: string;
+    partnerAttending: string;
+    timestamp: string;
+  }
+
+  function parseAfterPartyRow(row: string[]): AfterPartyRow {
+    // col[4] is shuttle (Yes/No) from /after-party, or timestamp from /afters
+    const col4IsTimestamp = (row[4] ?? '').includes('T');
+    return {
+      name: row[0] ?? '',
+      attending: row[1] ?? '',
+      partnerName: row[2] ?? '',
+      partnerAttending: row[3] ?? '',
+      timestamp: col4IsTimestamp ? (row[4] ?? '') : (row[5] ?? ''),
+    };
+  }
+
+  const afterPartyParsed = afterPartyRows.map(parseAfterPartyRow);
+  let afterPartyYesCount = 0;
+  for (const r of afterPartyParsed) {
+    if (r.attending === 'Yes') afterPartyYesCount++;
+    if (r.partnerAttending === 'Yes') afterPartyYesCount++;
+  }
+  const recentAfterParty = [...afterPartyParsed]
+    .filter((r) => r.timestamp)
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(0, 5);
+
   const today = new Date().toLocaleDateString('en-IE', { dateStyle: 'long' });
 
   const thCls = 'text-left text-xs uppercase tracking-wider text-slate-500 px-3 py-2 font-medium';
@@ -204,11 +235,16 @@ export default async function DashboardPage({
         </header>
 
         <section>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <StatCard label="Total Invited" guests={all.totalGuests} parties={all.totalParties} />
             <StatCard label="Accepted" guests={all.acceptedGuests} parties={all.acceptedParties} />
             <StatCard label="Declined" guests={all.declinedGuests} parties={all.declinedParties} />
             <StatCard label="Pending" guests={all.pendingGuests} parties={all.pendingParties} />
+            <div className="bg-white border border-slate-200 rounded-lg p-5">
+              <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">After Party</p>
+              <p className="text-3xl font-semibold text-slate-800">{afterPartyYesCount}</p>
+              <p className="text-xs text-slate-400 mt-1">{afterPartyParsed.length} {afterPartyParsed.length === 1 ? 'response' : 'responses'}</p>
+            </div>
           </div>
         </section>
 
@@ -316,6 +352,40 @@ export default async function DashboardPage({
         <section>
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">All guests</h2>
           <GuestTable rows={guestTableRows} />
+        </section>
+
+        <section>
+          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">After party RSVPs</h2>
+
+          {recentAfterParty.length === 0 ? (
+            <p className="text-sm text-slate-400">No responses yet.</p>
+          ) : (
+            <>
+              <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-3">Recent responses</h3>
+              <div className="bg-white border border-slate-200 rounded-lg divide-y divide-slate-100">
+                {recentAfterParty.map((r, i) => {
+                  const ts = new Date(r.timestamp);
+                  const timeStr = ts.toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit' });
+                  const dateStr = ts.toLocaleDateString('en-IE', { day: 'numeric', month: 'short' });
+                  const attending = r.attending === 'Yes';
+                  return (
+                    <div key={i} className="px-4 py-3 flex items-center justify-between gap-4">
+                      <div>
+                        <span className="text-sm font-medium text-slate-800">{r.name}</span>
+                        {r.partnerName && (
+                          <span className="text-sm text-slate-500"> &amp; {r.partnerName}</span>
+                        )}
+                        <span className="ml-2 text-xs font-medium" style={{ color: attending ? '#16a34a' : '#dc2626' }}>
+                          {attending ? 'Accepted' : 'Declined'}
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-400 whitespace-nowrap">{dateStr} · {timeStr}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </section>
 
       </div>
