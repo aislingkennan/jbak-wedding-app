@@ -51,8 +51,7 @@ function buildHtml(party: Party): string {
               <div style="border-left:3px solid #c9a84c;padding-left:20px;margin-bottom:28px;font-size:14px;line-height:1.8;">
                 ${venueSection}
               </div>
-              <p style="margin:0 0 8px 0;line-height:1.7;font-size:15px;">Please let us know if you are able to join us by responding below.</p>
-              <p style="margin:0 0 28px 0;line-height:1.7;font-size:15px;"><strong>Please RSVP by June 25th.</strong></p>
+              <p style="margin:0 0 28px 0;line-height:1.7;font-size:15px;">Please let us know if you are able to join us by responding below.</p>
               <div style="text-align:center;margin-bottom:32px;">
                 <a href="${rsvpUrl}" style="display:inline-block;background-color:#c9a84c;color:#fff;text-decoration:none;padding:14px 36px;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',Helvetica,Arial,sans-serif;">RSVP Now</a>
               </div>

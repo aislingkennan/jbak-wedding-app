@@ -10,10 +10,6 @@ const gettingThereAnswers: Record<AttendanceType, string> = {
 export default function FAQ({ attendanceType }: { attendanceType: AttendanceType }) {
   const faqs = [
     {
-      question: 'RSVP deadline',
-      answer: 'Please RSVP by June 25th.',
-    },
-    {
       question: 'Dress code',
       answer: 'Cocktail. No need to overthink it, just wear what makes you feel fancy and ready to dance.',
     },
