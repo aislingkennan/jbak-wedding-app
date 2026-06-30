@@ -194,6 +194,7 @@ export default async function DashboardPage({
     attending: string;
     partnerName: string;
     partnerAttending: string;
+    shuttle: string;
     timestamp: string;
   }
 
@@ -205,6 +206,7 @@ export default async function DashboardPage({
       attending: row[1] ?? '',
       partnerName: row[2] ?? '',
       partnerAttending: row[3] ?? '',
+      shuttle: col4IsTimestamp ? '' : (row[4] ?? ''),
       timestamp: col4IsTimestamp ? (row[4] ?? '') : (row[5] ?? ''),
     };
   }
@@ -378,6 +380,11 @@ export default async function DashboardPage({
                         <span className="ml-2 text-xs font-medium" style={{ color: attending ? '#16a34a' : '#dc2626' }}>
                           {attending ? 'Accepted' : 'Declined'}
                         </span>
+                        {r.shuttle && (
+                          <span className="ml-2 text-xs text-slate-500">
+                            Bus: <span className="font-medium" style={{ color: r.shuttle === 'Yes' ? '#16a34a' : '#dc2626' }}>{r.shuttle}</span>
+                          </span>
+                        )}
                       </div>
                       <span className="text-xs text-slate-400 whitespace-nowrap">{dateStr} · {timeStr}</span>
                     </div>

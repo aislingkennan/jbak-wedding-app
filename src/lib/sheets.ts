@@ -70,7 +70,7 @@ export async function getAfterPartyRsvps(): Promise<string[][]> {
   const sheets = google.sheets({ version: 'v4', auth: getAuth() });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `'After Party'!A2:F500`,
+    range: `'After Party'!A1:F500`,
   });
   return (res.data.values as string[][]) ?? [];
 }
