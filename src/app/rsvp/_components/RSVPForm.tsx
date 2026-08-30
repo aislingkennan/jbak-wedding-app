@@ -129,11 +129,11 @@ export default function RSVPForm({ party, isDemo, existingRsvp }: Props) {
         {isFull ? (
           <div className="text-sm text-gray-600 leading-relaxed space-y-1 border-l-2 pl-4" style={{ borderColor: '#C9A84C' }}>
             <p><span className="font-medium">Ceremony</span> — MoLI, Newman House, St Stephen&apos;s Green, Dublin 2 at 2:00pm</p>
-            <p><span className="font-medium">Dinner &amp; Dancing</span> — Ashton&apos;s Pub, Clonskeagh Road, Dublin 6 from 4:45pm</p>
+            <p><span className="font-medium">Dinner &amp; Dancing</span> — Ashton&apos;s Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271 from 4:45pm</p>
           </div>
         ) : (
           <div className="text-sm text-gray-600 leading-relaxed border-l-2 pl-4" style={{ borderColor: '#C9A84C' }}>
-            <p><span className="font-medium">Dinner &amp; Dancing</span> — Ashton&apos;s Pub, Clonskeagh Road, Rathmines, Dublin 6 from 4:45pm</p>
+            <p><span className="font-medium">Dinner &amp; Dancing</span> — Ashton&apos;s Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271 from 4:45pm</p>
           </div>
         )}
       </div>

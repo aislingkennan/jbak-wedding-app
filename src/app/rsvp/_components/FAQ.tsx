@@ -2,9 +2,9 @@ import type { AttendanceType } from '@/lib/types';
 
 const gettingThereAnswers: Record<AttendanceType, string> = {
   'Ceremony + Dinner':
-    "MoLI is on Stephen's Green, serviceable by bus or Luas (tram). Alternatively, taxis are easy to come by. We will organise transport from MoLI to Ashton's for guests, following a small reception in MoLI.",
+    "MoLI (Newman House, 85/86 St Stephen's Green, Dublin 2) is on Stephen's Green, serviceable by bus or Luas (tram). Alternatively, taxis are easy to come by. We will organise transport from MoLI to Ashton's Pub (11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271) for guests, following a small reception in MoLI.",
   'Dinner':
-    "Ashton's is a 20 min walk from Luas, or accessible by bus. There is a small amount of parking available at Ashton's.",
+    "Ashton's Pub (11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271) is a 20 min walk from Luas, or accessible by bus. There is a small amount of parking available at Ashton's.",
 };
 
 export default function FAQ({ attendanceType }: { attendanceType: AttendanceType }) {
