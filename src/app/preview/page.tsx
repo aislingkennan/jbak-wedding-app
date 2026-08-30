@@ -1,4 +1,6 @@
 const BASE_URL = 'http://localhost:3000';
+const MOLI_MAP_URL = 'https://maps.app.goo.gl/bEBgrE7wXk3KShL69';
+const ASHTONS_MAP_URL = 'https://maps.app.goo.gl/wL1E8ryfJKzpjCG36';
 
 function buildHtml(isFull: boolean, displayName: string) {
   const rsvpUrl = `${BASE_URL}/rsvp/abc123`;
@@ -6,16 +8,15 @@ function buildHtml(isFull: boolean, displayName: string) {
   const venueSection = isFull
     ? `
       <p style="margin:0 0 8px 0;"><strong>Ceremony</strong><br/>
-      MoLI — Museum of Literature Ireland<br/>
-      Newman House, 85/86 St Stephen's Green, Dublin 2<br/>
+      <a href="${MOLI_MAP_URL}" style="color:#c9a84c;">MoLI — Museum of Literature Ireland</a><br/>
       <em>Arrive 2:00pm · Ceremony begins 2:30pm</em></p>
       <p style="margin:0 0 8px 0;"><strong>Dinner &amp; Dancing</strong><br/>
-      Ashton's Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271<br/>
+      <a href="${ASHTONS_MAP_URL}" style="color:#c9a84c;">Ashton's Pub</a><br/>
       <em>Arrive 4:45pm</em></p>
     `
     : `
       <p style="margin:0 0 8px 0;"><strong>Dinner &amp; Dancing</strong><br/>
-      Ashton's Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271<br/>
+      <a href="${ASHTONS_MAP_URL}" style="color:#c9a84c;">Ashton's Pub</a><br/>
       <em>Arrive 4:45pm</em></p>
     `;
 
