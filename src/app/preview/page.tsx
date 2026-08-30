@@ -10,12 +10,12 @@ function buildHtml(isFull: boolean, displayName: string) {
       Newman House, 85/86 St Stephen's Green, Dublin 2<br/>
       <em>Arrive 2:00pm · Ceremony begins 2:30pm</em></p>
       <p style="margin:0 0 8px 0;"><strong>Dinner &amp; Dancing</strong><br/>
-      Ashton's Pub, Clonskeagh Road, Rathmines, Dublin 6<br/>
+      Ashton's Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271<br/>
       <em>Arrive 4:45pm</em></p>
     `
     : `
       <p style="margin:0 0 8px 0;"><strong>Dinner &amp; Dancing</strong><br/>
-      Ashton's Pub, Clonskeagh Road, Rathmines, Dublin 6<br/>
+      Ashton's Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271<br/>
       <em>Arrive 4:45pm</em></p>
     `;
 

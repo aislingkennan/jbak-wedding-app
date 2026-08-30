@@ -48,7 +48,7 @@ export default function AftersForm() {
     <form onSubmit={handleSubmit} className="p-6">
       <div className="mb-6">
         <div className="text-sm text-gray-600 leading-relaxed border-l-2 pl-4" style={{ borderColor: '#C9A84C' }}>
-          <p><span className="font-medium">Drinks &amp; Dancing</span> — Ashton&apos;s Pub, Clonskeagh Road, Rathmines, Dublin 6 from 8:30pm</p>
+          <p><span className="font-medium">Drinks &amp; Dancing</span> — Ashton&apos;s Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271 from 8:30pm</p>
         </div>
       </div>
 

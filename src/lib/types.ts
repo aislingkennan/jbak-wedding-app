@@ -29,3 +29,10 @@ export interface RsvpSubmission {
   childUnder3: boolean;
   notes?: string;
 }
+
+export interface RsvpRecord {
+  guestResponses: { name: string; dietary: string; attending: boolean }[];
+  childUnder3: boolean;
+  notes: string;
+  timestamp: string;
+}

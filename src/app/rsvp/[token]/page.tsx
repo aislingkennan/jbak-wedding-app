@@ -1,11 +1,13 @@
 import { notFound } from 'next/navigation';
-import { getPartyByToken } from '@/lib/tokens';
+import { getPartyByToken, getRsvpByToken } from '@/lib/tokens';
 import RSVPTabs from '../_components/RSVPTabs';
 import CollapsibleCard from '../_components/CollapsibleCard';
 
 export default async function RsvpPage({ params }: { params: { token: string } }) {
   const party = await getPartyByToken(params.token);
   if (!party) notFound();
+
+  const existingRsvp = await getRsvpByToken(params.token);
 
   return (
     <main
@@ -23,7 +25,7 @@ export default async function RsvpPage({ params }: { params: { token: string } }
         </header>
 
         <CollapsibleCard>
-          <RSVPTabs party={party} />
+          <RSVPTabs party={party} existingRsvp={existingRsvp} />
         </CollapsibleCard>
 
         <footer className="text-center mt-6">

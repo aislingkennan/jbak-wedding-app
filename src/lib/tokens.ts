@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
-import { getAllGuests, writeToken } from './sheets';
-import type { AttendanceType, GuestRow, Party } from './types';
+import { getAllGuests, writeToken, getRsvpResponses } from './sheets';
+import type { AttendanceType, GuestRow, Party, RsvpRecord } from './types';
 
 export function parseRows(rows: string[][]): GuestRow[] {
   return rows.map((row, index) => ({
@@ -63,6 +63,32 @@ export async function getAllParties(): Promise<Party[]> {
 export async function getPartyByToken(token: string): Promise<Party | null> {
   const parties = await getAllParties();
   return parties.find((p) => p.token === token) ?? null;
+}
+
+export async function getRsvpByToken(token: string): Promise<RsvpRecord | null> {
+  const rows = await getRsvpResponses();
+  const matches = rows.filter((row) => row[0] === token);
+  if (matches.length === 0) return null;
+
+  // Later rows are more recent submissions for this token; take the last one.
+  const row = matches[matches.length - 1];
+  const guestResponses: RsvpRecord['guestResponses'] = [];
+
+  const guest1Name = row[4] ?? '';
+  if (guest1Name) {
+    guestResponses.push({ name: guest1Name, attending: row[5] === 'Yes', dietary: row[6] ?? '' });
+  }
+  const guest2Name = row[7] ?? '';
+  if (guest2Name) {
+    guestResponses.push({ name: guest2Name, attending: row[8] === 'Yes', dietary: row[9] ?? '' });
+  }
+
+  return {
+    guestResponses,
+    childUnder3: row[10] === 'Yes',
+    notes: row[11] ?? '',
+    timestamp: row[12] ?? '',
+  };
 }
 
 export async function ensureTokens(): Promise<Party[]> {
