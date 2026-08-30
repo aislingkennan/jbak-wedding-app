@@ -1,10 +1,31 @@
+import type { ReactNode } from 'react';
 import type { AttendanceType } from '@/lib/types';
 
-const gettingThereAnswers: Record<AttendanceType, string> = {
-  'Ceremony + Dinner':
-    "MoLI (Newman House, 85/86 St Stephen's Green, Dublin 2) is on Stephen's Green, serviceable by bus or Luas (tram). Alternatively, taxis are easy to come by. We will organise transport from MoLI to Ashton's Pub (11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271) for guests, following a small reception in MoLI.",
-  'Dinner':
-    "Ashton's Pub (11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271) is a 20 min walk from Luas, or accessible by bus. There is a small amount of parking available at Ashton's.",
+const MOLI_MAP_URL = 'https://maps.app.goo.gl/bEBgrE7wXk3KShL69';
+const ASHTONS_MAP_URL = 'https://maps.app.goo.gl/wL1E8ryfJKzpjCG36';
+
+function MapLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#c9a84c', textDecoration: 'underline' }}>
+      {children}
+    </a>
+  );
+}
+
+const gettingThereAnswers: Record<AttendanceType, ReactNode> = {
+  'Ceremony + Dinner': (
+    <>
+      <MapLink href={MOLI_MAP_URL}>MoLI</MapLink> is on Stephen&apos;s Green, serviceable by bus or Luas (tram).
+      Alternatively, taxis are easy to come by. We will organise transport from MoLI to{' '}
+      <MapLink href={ASHTONS_MAP_URL}>Ashton&apos;s Pub</MapLink> for guests, following a small reception in MoLI.
+    </>
+  ),
+  Dinner: (
+    <>
+      <MapLink href={ASHTONS_MAP_URL}>Ashton&apos;s Pub</MapLink> is a 20 min walk from Luas, or accessible by bus.
+      There is a small amount of parking available at Ashton&apos;s.
+    </>
+  ),
 };
 
 export default function FAQ({ attendanceType }: { attendanceType: AttendanceType }) {

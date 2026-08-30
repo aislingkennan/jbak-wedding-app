@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import type { Party, RsvpRecord } from '@/lib/types';
 
+const MOLI_MAP_URL = 'https://maps.app.goo.gl/bEBgrE7wXk3KShL69';
+const ASHTONS_MAP_URL = 'https://maps.app.goo.gl/wL1E8ryfJKzpjCG36';
+
 interface Props {
   party: Party;
   isDemo?: boolean;
@@ -128,12 +131,12 @@ export default function RSVPForm({ party, isDemo, existingRsvp }: Props) {
         <p className="font-serif text-xl text-gray-800 mb-3">Dear {party.displayName},</p>
         {isFull ? (
           <div className="text-sm text-gray-600 leading-relaxed space-y-1 border-l-2 pl-4" style={{ borderColor: '#C9A84C' }}>
-            <p><span className="font-medium">Ceremony</span> — MoLI, Newman House, St Stephen&apos;s Green, Dublin 2 at 2:00pm</p>
-            <p><span className="font-medium">Dinner &amp; Dancing</span> — Ashton&apos;s Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271 from 4:45pm</p>
+            <p><span className="font-medium">Ceremony</span> — <a href={MOLI_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#C9A84C' }}>MoLI</a> at 2:00pm</p>
+            <p><span className="font-medium">Dinner &amp; Dancing</span> — <a href={ASHTONS_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#C9A84C' }}>Ashton&apos;s Pub</a> from 4:45pm</p>
           </div>
         ) : (
           <div className="text-sm text-gray-600 leading-relaxed border-l-2 pl-4" style={{ borderColor: '#C9A84C' }}>
-            <p><span className="font-medium">Dinner &amp; Dancing</span> — Ashton&apos;s Pub, 11 Vergemount, Bóthar Chluain Sceach, Rathmines, Dublin, D06 X271 from 4:45pm</p>
+            <p><span className="font-medium">Dinner &amp; Dancing</span> — <a href={ASHTONS_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#C9A84C' }}>Ashton&apos;s Pub</a> from 4:45pm</p>
           </div>
         )}
       </div>
