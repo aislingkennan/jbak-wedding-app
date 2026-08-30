@@ -8,6 +8,8 @@ interface Props {
   isDemo?: boolean;
 }
 
+const RSVP_CLOSED = true;
+
 export default function RSVPForm({ party, isDemo }: Props) {
   const [attending, setAttending] = useState<(boolean | null)[]>(party.guests.map(() => null));
   const [dietaries, setDietaries] = useState<string[]>(party.guests.map(() => ''));
@@ -18,6 +20,18 @@ export default function RSVPForm({ party, isDemo }: Props) {
   const [error, setError] = useState('');
 
   const isFull = party.attendanceType === 'Ceremony + Dinner';
+
+  if (RSVP_CLOSED && !isDemo) {
+    return (
+      <div className="text-center py-8 px-6">
+        <p className="font-serif text-2xl text-gray-800 mb-3">Thanks for submitting your RSVP</p>
+        <div className="w-12 h-px mx-auto mb-5" style={{ backgroundColor: '#C9A84C' }} />
+        <p className="text-gray-600 leading-relaxed">
+          RSVP submissions are now closed, {party.displayName}. If you need to make a change, please email us.
+        </p>
+      </div>
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
