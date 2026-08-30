@@ -1,16 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import type { Party } from '@/lib/types';
+import type { Party, RsvpRecord } from '@/lib/types';
 
 interface Props {
   party: Party;
   isDemo?: boolean;
+  existingRsvp?: RsvpRecord | null;
 }
 
 const RSVP_CLOSED = true;
 
-export default function RSVPForm({ party, isDemo }: Props) {
+export default function RSVPForm({ party, isDemo, existingRsvp }: Props) {
   const [attending, setAttending] = useState<(boolean | null)[]>(party.guests.map(() => null));
   const [dietaries, setDietaries] = useState<string[]>(party.guests.map(() => ''));
   const [childUnder3, setChildUnder3] = useState(false);
@@ -22,13 +23,46 @@ export default function RSVPForm({ party, isDemo }: Props) {
   const isFull = party.attendanceType === 'Ceremony + Dinner';
 
   if (RSVP_CLOSED && !isDemo) {
+    if (!existingRsvp) {
+      return (
+        <div className="text-center py-8 px-6">
+          <p className="font-serif text-2xl text-gray-800 mb-3">RSVPs are now closed</p>
+          <div className="w-12 h-px mx-auto mb-5" style={{ backgroundColor: '#C9A84C' }} />
+          <p className="text-gray-600 leading-relaxed">
+            We don&apos;t have a response on file for you, {party.displayName}. If you&apos;d still like to let us know, please email us.
+          </p>
+        </div>
+      );
+    }
+
     return (
-      <div className="text-center py-8 px-6">
-        <p className="font-serif text-2xl text-gray-800 mb-3">Thanks for submitting your RSVP</p>
-        <div className="w-12 h-px mx-auto mb-5" style={{ backgroundColor: '#C9A84C' }} />
-        <p className="text-gray-600 leading-relaxed">
-          RSVP submissions are now closed, {party.displayName}. If you need to make a change, please email us.
-        </p>
+      <div className="py-6 px-6">
+        <p className="font-serif text-2xl text-gray-800 mb-3 text-center">Thanks for submitting your RSVP</p>
+        <div className="w-12 h-px mx-auto mb-6" style={{ backgroundColor: '#C9A84C' }} />
+        <p className="text-sm text-gray-600 mb-5 text-center">Here&apos;s what you told us, {party.displayName}:</p>
+
+        <div className="space-y-4 mb-6">
+          {existingRsvp.guestResponses.map((guest, i) => (
+            <div key={i} className="border-l-2 pl-4" style={{ borderColor: '#C9A84C' }}>
+              <p className="text-sm font-medium text-gray-700">{guest.name}</p>
+              <p className="text-sm" style={{ color: guest.attending ? '#7a9a5c' : '#8a7a6a' }}>
+                {guest.attending ? 'Joyfully accepted' : 'Regretfully declined'}
+              </p>
+              {guest.attending && guest.dietary && (
+                <p className="text-xs text-gray-500 mt-1">Dietary requirements: {guest.dietary}</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {existingRsvp.childUnder3 && (
+          <p className="text-sm text-gray-600 mb-2">Bringing our little infant.</p>
+        )}
+        {existingRsvp.notes && (
+          <p className="text-sm text-gray-600 mb-2">Notes: {existingRsvp.notes}</p>
+        )}
+
+        <p className="text-xs text-gray-400 mt-4 text-center">Need to make a change? Please email us.</p>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Party } from '@/lib/types';
+import type { Party, RsvpRecord } from '@/lib/types';
 import RSVPForm from './RSVPForm';
 import Schedule from './Schedule';
 import FAQ from './FAQ';
@@ -9,7 +9,15 @@ import FAQ from './FAQ';
 const tabs = ['RSVP', 'The Day', 'FAQs'] as const;
 type Tab = typeof tabs[number];
 
-export default function RSVPTabs({ party, isDemo }: { party: Party; isDemo?: boolean }) {
+export default function RSVPTabs({
+  party,
+  isDemo,
+  existingRsvp,
+}: {
+  party: Party;
+  isDemo?: boolean;
+  existingRsvp?: RsvpRecord | null;
+}) {
   const [active, setActive] = useState<Tab>('RSVP');
 
   return (
@@ -33,7 +41,7 @@ export default function RSVPTabs({ party, isDemo }: { party: Party; isDemo?: boo
       </div>
 
       <div className="p-6">
-        {active === 'RSVP' && <RSVPForm party={party} isDemo={isDemo} />}
+        {active === 'RSVP' && <RSVPForm party={party} isDemo={isDemo} existingRsvp={existingRsvp} />}
         {active === 'The Day' && <Schedule attendanceType={party.attendanceType} />}
         {active === 'FAQs' && <FAQ attendanceType={party.attendanceType} />}
       </div>
